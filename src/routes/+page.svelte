@@ -60,8 +60,13 @@
       (activeLesson === 0 && activePart === 2) ||
       (activeLesson === 0 && activePart === 3) ||
       (activeLesson === 0 && activePart === 4) ||
-      (activeLesson === 1 && activePart === 0)
+      (activeLesson === 1 && activePart === 0) ||
+      isStoryExercise()
     );
+  }
+
+  function isStoryExercise() {
+    return activeLesson === 6 && activePart === 0;
   }
 
   function updateLine(index: number, event: Event) {
@@ -170,7 +175,13 @@
       <div class="exercise-list">
         {#each practiceLines as line, index}
           <div class="exercise-row">
-            <div class:kruti-dev={isKrutiDevExercise()} class="prompt">{line}</div>
+            <div
+              class:kruti-dev={isKrutiDevExercise()}
+              class:unicode-dev={isStoryExercise()}
+              class="prompt"
+            >
+              {line}
+            </div>
             <input
               class:kruti-dev={isKrutiDevExercise()}
               bind:this={inputElements[index]}
@@ -345,6 +356,10 @@
 
   .kruti-dev {
     font-family: "Kruti Dev 010", "Kruti Dev", sans-serif;
+  }
+
+  .unicode-dev {
+    font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
   }
 
   .prompt.kruti-dev {
