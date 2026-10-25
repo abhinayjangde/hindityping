@@ -1,16 +1,16 @@
 <script lang="ts">
   const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
   const parts = ["part 1", "part 2", "part 3", "part 4", "part 5", "part 6", "part 7", "part 8", "part 9"];
-  const keyboardPractice = "sdfgh ';lkj";
   const practiceText = "ेकिही ष्यसार";
   const practiceLines = Array.from(
-    { length: 9 },
+    { length: 10 },
     () => `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
   );
 
   let activeLesson = $state(0);
   let activePart = $state(0);
   let typedLines = $state<string[]>(practiceLines.map(() => ""));
+  let inputElements: HTMLInputElement[] = [];
 
   function chooseLesson(index: number) {
     activeLesson = index;
@@ -26,6 +26,16 @@
     const target = event.currentTarget as HTMLInputElement;
     typedLines[index] = target.value;
     typedLines = typedLines;
+    focusNextLine(index, target.value);
+  }
+
+  function focusNextLine(index: number, value: string) {
+    if (
+      index < practiceLines.length - 1 &&
+      Array.from(value).length >= Array.from(practiceLines[index]).length
+    ) {
+      inputElements[index + 1]?.focus();
+    }
   }
 
   function insertText(index: number, target: HTMLInputElement, insertedText: string) {
@@ -38,6 +48,7 @@
     requestAnimationFrame(() => {
       const cursor = start + insertedText.length;
       target.setSelectionRange(cursor, cursor);
+      focusNextLine(index, nextValue);
     });
   }
 
@@ -109,28 +120,13 @@
     </aside>
 
     <section class="practice-panel" aria-labelledby="practice-title">
-      <div class="practice-header">
-        <div>
-          <p class="breadcrumb">lesson {activeLesson + 1} <span>/</span> {parts[activePart]}</p>
-          <h1 id="practice-title">हिंदी टाइपिंग अभ्यास</h1>
-        </div>
-        <div class="progress" aria-label="Practice progress">
-          <span>{typedLines.filter((line) => line.length > 0).length} / {practiceLines.length}</span>
-          <div class="progress-track"><div class="progress-value" style={`width: ${(typedLines.filter((line) => line.length > 0).length / practiceLines.length) * 100}%`}></div></div>
-        </div>
-      </div>
-
-      <div class="instructions">
-        <span class="keyboard-icon" aria-hidden="true">⌨</span>
-        <span>ऊपर दिए गए शब्दों को नीचे के बॉक्स में टाइप करें</span>
-      </div>
 
       <div class="exercise-list">
         {#each practiceLines as line, index}
           <div class="exercise-row">
-            <div class="keyboard-source">Keyboard: <code>{keyboardPractice}</code></div>
             <div class="prompt">{line}</div>
             <input
+              bind:this={inputElements[index]}
               value={typedLines[index]}
               oninput={(event) => updateLine(index, event)}
               onkeydown={(event) => handleKeydown(index, event)}
@@ -265,67 +261,7 @@
     background: #fff;
   }
 
-  .practice-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 25px;
-    margin: 0 0 21px;
-  }
 
-  .breadcrumb {
-    margin: 0 0 4px;
-    color: #2e8068;
-    font-size: 0.88rem;
-    font-weight: 700;
-    text-transform: capitalize;
-  }
-
-  .breadcrumb span {
-    padding: 0 5px;
-    color: #9c9c9c;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(1.35rem, 2.6vw, 1.9rem);
-    font-weight: 700;
-  }
-
-  .progress {
-    width: 145px;
-    color: #6d6d6d;
-    font-size: 0.8rem;
-    text-align: right;
-  }
-
-  .progress-track {
-    height: 5px;
-    margin-top: 6px;
-    overflow: hidden;
-    background: #e1e1e1;
-    border-radius: 5px;
-  }
-
-  .progress-value {
-    height: 100%;
-    background: #2e8068;
-    transition: width 150ms ease;
-  }
-
-  .instructions {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin-bottom: 17px;
-    color: #686868;
-    font-size: 0.9rem;
-  }
-
-  .keyboard-icon {
-    color: #2e8068;
-    font-size: 1.1rem;
-  }
 
   .exercise-list {
     display: flex;
@@ -335,7 +271,6 @@
 
   .exercise-row {
     overflow: hidden;
-    border: 1px solid #e4e4e4;
     background: #f1f1f1;
   }
 
@@ -345,25 +280,10 @@
     overflow: hidden;
     color: #202020;
     background: #fff;
-    font-family: "Kruti Dev 010", "Kruti Dev", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+    font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
     font-size: clamp(1rem, 1.8vw, 1.15rem);
     line-height: 1.65;
     white-space: nowrap;
-  }
-
-  .keyboard-source {
-    padding: 6px 13px 3px;
-    color: #777;
-    background: #fafafa;
-    border-bottom: 1px solid #e5e5e5;
-    font-family: "Segoe UI", sans-serif;
-    font-size: 0.75rem;
-  }
-
-  code {
-    color: #3e6658;
-    font-family: Consolas, "Courier New", monospace;
-    font-size: 0.85rem;
   }
 
   input {
@@ -375,7 +295,7 @@
     background: #e1e1e1;
     border: 0;
     outline: 0;
-    font-family: "Kruti Dev 010", "Kruti Dev", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+    font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
     font-size: 1.02rem;
     line-height: 1.6;
     unicode-bidi: plaintext;
@@ -387,7 +307,6 @@
 
   input:focus {
     background: #d5ebe3;
-    box-shadow: inset 0 0 0 2px #2e8068;
   }
 
   @media (max-width: 900px) {
