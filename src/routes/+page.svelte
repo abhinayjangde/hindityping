@@ -11,7 +11,7 @@
       () =>
         activeLesson === 0 && activePart === 1
           ? "dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk"
-          : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
+          : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
     )
   );
   let typedLines = $state<string[]>(Array.from({ length: 10 }, () => ""));
@@ -305,7 +305,7 @@
     color: #202020;
     background: #fff;
     font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
-    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    font-size: clamp(1.4rem, 1.8vw, 20px);
     line-height: 1.65;
     white-space: nowrap;
   }
@@ -324,7 +324,7 @@
     border: 0;
     outline: 0;
     font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
-    font-size: 1.02rem;
+    font-size: clamp(16px, 1.8vw, 20px);
     line-height: 1.6;
     unicode-bidi: plaintext;
   }
