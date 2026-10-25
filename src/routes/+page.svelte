@@ -11,6 +11,12 @@
       () =>
         activeLesson === 0 && activePart === 1
           ? "dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk"
+          : activeLesson === 0 && activePart === 2
+            ? "dkdh dkdh dkdh dkdh dkdh dkdh dkdh dkdh dkdh dkdh"
+          : activeLesson === 0 && activePart === 3
+            ? "gd gd gd gd gd gd gd gd gd gd"
+          : activeLesson === 0 && activePart === 4
+            ? "dj dj dj dj dj dj dj dj dj dj"
           : activeLesson === 1 && activePart === 0
             ? "zxcvb /.,mn"
           : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
@@ -32,6 +38,9 @@
   function isKrutiDevExercise() {
     return (
       (activeLesson === 0 && activePart === 1) ||
+      (activeLesson === 0 && activePart === 2) ||
+      (activeLesson === 0 && activePart === 3) ||
+      (activeLesson === 0 && activePart === 4) ||
       (activeLesson === 1 && activePart === 0)
     );
   }
