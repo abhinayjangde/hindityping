@@ -1,15 +1,20 @@
 <script lang="ts">
   const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
-  const parts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09"];
-  const practiceText = "ेकिही ष्यसार";
-  const practiceLines = Array.from(
-    { length: 10 },
-    () => `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
-  );
+  const parts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09", "Part 10"];
 
   let activeLesson = $state(0);
   let activePart = $state(0);
-  let typedLines = $state<string[]>(practiceLines.map(() => ""));
+  const practiceText = "ेकिही ष्यसार";
+  const practiceLines = $derived(
+    Array.from(
+      { length: 10 },
+      () =>
+        activeLesson === 0 && activePart === 1
+          ? "dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk"
+          : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
+    )
+  );
+  let typedLines = $state<string[]>(Array.from({ length: 10 }, () => ""));
   let inputElements: HTMLInputElement[] = [];
 
   function chooseLesson(index: number) {
@@ -20,6 +25,10 @@
   function choosePart(index: number) {
     activePart = index;
     typedLines = practiceLines.map(() => "");
+  }
+
+  function isKrutiDevExercise() {
+    return activeLesson === 0 && activePart === 1;
   }
 
   function updateLine(index: number, event: Event) {
@@ -54,6 +63,10 @@
 
   function handleKeydown(index: number, event: KeyboardEvent) {
     const target = event.currentTarget as HTMLInputElement;
+    if (isKrutiDevExercise()) {
+      return;
+    }
+
     const keyMappings: Record<string, string> = {
       KeyS: "े",
       KeyD: "क",
@@ -124,8 +137,9 @@
       <div class="exercise-list">
         {#each practiceLines as line, index}
           <div class="exercise-row">
-            <div class="prompt">{line}</div>
+            <div class:kruti-dev={isKrutiDevExercise()} class="prompt">{line}</div>
             <input
+              class:kruti-dev={isKrutiDevExercise()}
               bind:this={inputElements[index]}
               value={typedLines[index]}
               oninput={(event) => updateLine(index, event)}
@@ -294,6 +308,10 @@
     font-size: clamp(1rem, 1.8vw, 1.15rem);
     line-height: 1.65;
     white-space: nowrap;
+  }
+
+  .kruti-dev {
+    font-family: "Kruti Dev 010", "Kruti Dev", sans-serif;
   }
 
   input {

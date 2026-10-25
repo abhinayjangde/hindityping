@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "tauri-app",
+  "productName": "hindi-typing",
   "version": "0.1.0",
   "identifier": "com.chikoo.hindityping",
   "build": {
@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "tauri-app",
-        "width": 800,
-        "height": 600
+        "title": "हिंदी टाइपिंग",
+        "width": 1500,
+        "height": 900
       }
     ],
     "security": {
