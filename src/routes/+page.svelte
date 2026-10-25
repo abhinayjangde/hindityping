@@ -150,11 +150,15 @@
   }
 
   :global(html) {
+    width: 100%;
+    min-height: 100%;
     background: #202020;
   }
 
   :global(body) {
-    min-width: 760px;
+    width: 100%;
+    min-width: 0;
+    min-height: 100%;
     margin: 0;
     font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", "Segoe UI", sans-serif;
     color: #161616;
@@ -167,9 +171,9 @@
   }
 
   .app-window {
-    width: min(100%, 1180px);
+    width: 100%;
     min-height: 100vh;
-    margin: 0 auto;
+    margin: 0;
     background: #d2d2d2;
     box-shadow: 0 0 0 1px #111, 0 12px 35px rgb(0 0 0 / 35%);
   }
