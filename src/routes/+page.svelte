@@ -1,17 +1,12 @@
 <script lang="ts">
   const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
   const parts = ["part 1", "part 2", "part 3", "part 4", "part 5", "part 6", "part 7", "part 8", "part 9"];
-  const practiceLines = [
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
-    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास"
-  ];
+  const keyboardPractice = "sdfgh ‘;lkj"; 
+  const practiceText = "ेकिही ष्यसार";
+  const practiceLines = Array.from(
+    { length: 9 },
+    () => `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
+  );
 
   let activeLesson = $state(0);
   let activePart = $state(0);
@@ -31,6 +26,28 @@
     const target = event.currentTarget as HTMLInputElement;
     typedLines[index] = target.value;
     typedLines = typedLines;
+  }
+
+  function handleKeydown(index: number, event: KeyboardEvent) {
+    if (event.code !== "Quote") {
+      return;
+    }
+
+    event.preventDefault();
+    const target = event.currentTarget as HTMLInputElement;
+    const start = target.selectionStart ?? target.value.length;
+    const end = target.selectionEnd ?? start;
+    const insertedText = event.shiftKey || event.getModifierState("CapsLock")
+      ? "श्"
+      : "ष्";
+    const nextValue = `${target.value.slice(0, start)}${insertedText}${target.value.slice(end)}`;
+    typedLines[index] = nextValue;
+    typedLines = typedLines;
+
+    requestAnimationFrame(() => {
+      const cursor = start + insertedText.length;
+      target.setSelectionRange(cursor, cursor);
+    });
   }
 </script>
 
@@ -93,10 +110,12 @@
       <div class="exercise-list">
         {#each practiceLines as line, index}
           <div class="exercise-row">
+            <div class="keyboard-source">Keyboard: <code>{keyboardPractice}</code></div>
             <div class="prompt">{line}</div>
             <input
               value={typedLines[index]}
               oninput={(event) => updateLine(index, event)}
+              onkeydown={(event) => handleKeydown(index, event)}
               aria-label={`अभ्यास पंक्ति ${index + 1}`}
               placeholder="यहाँ टाइप करें..."
               inputmode="text"
@@ -312,6 +331,21 @@
     font-size: clamp(1rem, 1.8vw, 1.15rem);
     line-height: 1.65;
     white-space: nowrap;
+  }
+
+  .keyboard-source {
+    padding: 6px 13px 3px;
+    color: #777;
+    background: #fafafa;
+    border-bottom: 1px solid #e5e5e5;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 0.75rem;
+  }
+
+  code {
+    color: #3e6658;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.85rem;
   }
 
   input {
