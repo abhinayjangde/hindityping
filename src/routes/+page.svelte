@@ -1,221 +1,362 @@
 <script lang="ts">
-  import { invoke } from "@tauri-apps/api/core";
+  const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
+  const parts = ["part 1", "part 2", "part 3", "part 4", "part 5", "part 6", "part 7", "part 8", "part 9"];
+  const practiceLines = [
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास",
+    "कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास कैसे प्रयास"
+  ];
 
-  let name = $state("अभ्यासक");
-  let greetMsg = $state("");
+  let activeLesson = $state(0);
+  let activePart = $state(0);
+  let typedLines = $state<string[]>(practiceLines.map(() => ""));
 
-  async function greet(event: Event) {
-    event.preventDefault();
-    greetMsg = await invoke("greet", { name });
+  function chooseLesson(index: number) {
+    activeLesson = index;
+    typedLines = practiceLines.map(() => "");
+  }
+
+  function choosePart(index: number) {
+    activePart = index;
+    typedLines = practiceLines.map(() => "");
+  }
+
+  function updateLine(index: number, event: Event) {
+    const target = event.currentTarget as HTMLInputElement;
+    typedLines[index] = target.value;
+    typedLines = typedLines;
   }
 </script>
 
 <svelte:head>
   <title>हिंदी टाइपिंग अभ्यास</title>
-  <meta
-    name="description"
-    content="A Hindi typing practice app built with Rust, Tauri, and Svelte."
-  />
+  <meta name="description" content="हिंदी टाइपिंग सीखने और अभ्यास करने का सरल तरीका।" />
 </svelte:head>
 
-<main class="page-shell">
-  <section class="hero-card">
-    <p class="eyebrow">Rust + Tauri + Svelte</p>
-    <h1>नमस्ते, हिंदी टाइपिंग!</h1>
-    <p class="intro">
-      आपका हिंदी टाइपिंग सीखने का सफर यहाँ से शुरू होता है।
-    </p>
+<main class="app-window" lang="hi">
+  <header class="lesson-bar" aria-label="Lessons">
+    <span class="window-title">हिंदी टाइपिंग</span>
+    <nav>
+      {#each lessons as lesson, index}
+        <button
+          class:active={activeLesson === index}
+          class="lesson-button"
+          type="button"
+          aria-current={activeLesson === index ? "page" : undefined}
+          onclick={() => chooseLesson(index)}
+        >
+          {lesson}
+        </button>
+      {/each}
+    </nav>
+  </header>
 
-    <form onsubmit={greet}>
-      <label for="name">अपना नाम लिखें</label>
-      <div class="input-row">
-        <input id="name" placeholder="जैसे: अनिल" bind:value={name} />
-        <button type="submit">अभिवादन करें</button>
+  <div class="workspace">
+    <aside class="parts-panel" aria-label="Lesson parts">
+      <div class="parts-heading">अभ्यास</div>
+      {#each parts as part, index}
+        <button
+          class:active={activePart === index}
+          class="part-button"
+          type="button"
+          aria-current={activePart === index ? "page" : undefined}
+          onclick={() => choosePart(index)}
+        >
+          {part}
+        </button>
+      {/each}
+    </aside>
+
+    <section class="practice-panel" aria-labelledby="practice-title">
+      <div class="practice-header">
+        <div>
+          <p class="breadcrumb">lesson {activeLesson + 1} <span>/</span> {parts[activePart]}</p>
+          <h1 id="practice-title">हिंदी टाइपिंग अभ्यास</h1>
+        </div>
+        <div class="progress" aria-label="Practice progress">
+          <span>{typedLines.filter((line) => line.length > 0).length} / {practiceLines.length}</span>
+          <div class="progress-track"><div class="progress-value" style={`width: ${(typedLines.filter((line) => line.length > 0).length / practiceLines.length) * 100}%`}></div></div>
+        </div>
       </div>
-    </form>
 
-    {#if greetMsg}
-      <p class="greeting" role="status">{greetMsg}</p>
-    {/if}
-
-    <div class="next-step">
-      <span class="icon" aria-hidden="true">⌨</span>
-      <div>
-        <strong>जल्द आ रहा है</strong>
-        <p>पाठ, अभ्यास और आपकी प्रगति एक ही जगह।</p>
+      <div class="instructions">
+        <span class="keyboard-icon" aria-hidden="true">⌨</span>
+        <span>ऊपर दिए गए शब्दों को नीचे के बॉक्स में टाइप करें</span>
       </div>
-    </div>
-  </section>
+
+      <div class="exercise-list">
+        {#each practiceLines as line, index}
+          <div class="exercise-row">
+            <div class="prompt">{line}</div>
+            <input
+              value={typedLines[index]}
+              oninput={(event) => updateLine(index, event)}
+              aria-label={`अभ्यास पंक्ति ${index + 1}`}
+              placeholder="यहाँ टाइप करें..."
+              inputmode="text"
+              lang="hi"
+              dir="ltr"
+              spellcheck="false"
+            />
+          </div>
+        {/each}
+      </div>
+    </section>
+  </div>
 </main>
 
 <style>
-:root {
-  font-family: "Noto Sans Devanagari", "Nirmala UI", "Segoe UI", sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #172033;
-  background: #f5f7fb;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.page-shell {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 2rem;
-  box-sizing: border-box;
-  background:
-    radial-gradient(circle at 15% 20%, #d9f4ee 0, transparent 28rem),
-    radial-gradient(circle at 85% 80%, #e5ddff 0, transparent 30rem),
-    #f5f7fb;
-}
-
-.hero-card {
-  width: min(100%, 680px);
-  padding: clamp(2rem, 6vw, 4.5rem);
-  box-sizing: border-box;
-  background: rgb(255 255 255 / 88%);
-  border: 1px solid rgb(255 255 255 / 80%);
-  border-radius: 28px;
-  box-shadow: 0 24px 70px rgb(53 64 96 / 14%);
-  backdrop-filter: blur(12px);
-}
-
-.eyebrow {
-  margin: 0 0 1rem;
-  color: #168b75;
-  font-size: 0.78rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-h1 {
-  max-width: 12ch;
-  margin: 0;
-  color: #18233b;
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
-  line-height: 1.15;
-  letter-spacing: -0.04em;
-}
-
-.intro {
-  max-width: 38rem;
-  margin: 1.5rem 0 2.5rem;
-  color: #58657c;
-  font-size: 1.2rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #34415b;
-  font-weight: 700;
-}
-
-.input-row {
-  display: flex;
-  gap: 0.75rem;
-}
-
-input,
-button {
-  min-height: 3.25rem;
-  box-sizing: border-box;
-  border-radius: 12px;
-  font: inherit;
-}
-
-input {
-  min-width: 0;
-  flex: 1;
-  padding: 0 1rem;
-  color: #18233b;
-  background: #fff;
-  border: 1px solid #d6ddeb;
-}
-
-input:focus {
-  outline: 3px solid rgb(22 139 117 / 20%);
-  border-color: #168b75;
-}
-
-button {
-  padding: 0 1.25rem;
-  color: #fff;
-  background: #168b75;
-  border: 0;
-  box-shadow: 0 8px 18px rgb(22 139 117 / 22%);
-  cursor: pointer;
-  font-weight: 700;
-  transition: transform 120ms ease, background 120ms ease;
-}
-
-button:hover {
-  background: #117662;
-  transform: translateY(-1px);
-}
-
-button:active {
-  transform: translateY(0);
-}
-
-.greeting {
-  margin: 1.25rem 0 0;
-  padding: 1rem;
-  color: #136b5b;
-  background: #e9f8f3;
-  border-radius: 12px;
-  font-weight: 700;
-}
-
-.next-step {
-  display: flex;
-  gap: 0.9rem;
-  align-items: center;
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e4e8f0;
-}
-
-.icon {
-  display: grid;
-  width: 2.75rem;
-  height: 2.75rem;
-  place-items: center;
-  color: #7157bd;
-  background: #f0edff;
-  border-radius: 10px;
-  font-size: 1.4rem;
-}
-
-.next-step strong {
-  color: #34415b;
-}
-
-.next-step p {
-  margin: 0.15rem 0 0;
-  color: #738097;
-}
-
-@media (max-width: 560px) {
-  .page-shell {
-    padding: 1rem;
+  :global(*) {
+    box-sizing: border-box;
   }
 
-  .hero-card {
-    padding: 2rem 1.5rem;
+  :global(html) {
+    background: #202020;
   }
 
-  .input-row {
+  :global(body) {
+    min-width: 760px;
+    margin: 0;
+    font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", "Segoe UI", sans-serif;
+    color: #161616;
+    background: #202020;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  .app-window {
+    width: min(100%, 1180px);
+    min-height: 100vh;
+    margin: 0 auto;
+    background: #d2d2d2;
+    box-shadow: 0 0 0 1px #111, 0 12px 35px rgb(0 0 0 / 35%);
+  }
+
+  .lesson-bar {
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+    padding: 0 27px;
+    gap: 22px;
+    background: #d3d3d3;
+    border-bottom: 1px solid #bcbcbc;
+  }
+
+  .window-title {
+    width: 112px;
+    color: #27745e;
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lesson-button,
+  .part-button {
+    border: 0;
+    color: #0a0a0a;
+    background: #2e8068;
+    cursor: pointer;
+    transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+  }
+
+  .lesson-button {
+    padding: 5px 10px 6px;
+    font-size: 0.98rem;
+  }
+
+  .lesson-button:hover,
+  .part-button:hover {
+    background: #22644f;
+    color: white;
+  }
+
+  .lesson-button.active,
+  .part-button.active {
+    color: #fff;
+    background: #1f6953;
+    box-shadow: inset 0 -3px 0 #12513f;
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: 224px minmax(0, 1fr);
+    min-height: calc(100vh - 70px);
+  }
+
+  .parts-panel {
+    padding: 25px 14px 30px;
+    background: #d3d3d3;
+    border-right: 1px solid #c3c3c3;
+  }
+
+  .parts-heading {
+    margin: 0 15px 17px;
+    color: #333;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .part-button {
+    display: block;
+    width: 164px;
+    min-height: 43px;
+    margin: 0 0 18px;
+    padding: 7px 12px;
+    text-align: left;
+    font-size: 1rem;
+  }
+
+  .practice-panel {
+    min-width: 0;
+    padding: 30px 49px 50px;
+    background: #fff;
+  }
+
+  .practice-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin: 0 0 21px;
+  }
+
+  .breadcrumb {
+    margin: 0 0 4px;
+    color: #2e8068;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+
+  .breadcrumb span {
+    padding: 0 5px;
+    color: #9c9c9c;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+    font-weight: 700;
+  }
+
+  .progress {
+    width: 145px;
+    color: #6d6d6d;
+    font-size: 0.8rem;
+    text-align: right;
+  }
+
+  .progress-track {
+    height: 5px;
+    margin-top: 6px;
+    overflow: hidden;
+    background: #e1e1e1;
+    border-radius: 5px;
+  }
+
+  .progress-value {
+    height: 100%;
+    background: #2e8068;
+    transition: width 150ms ease;
+  }
+
+  .instructions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 17px;
+    color: #686868;
+    font-size: 0.9rem;
+  }
+
+  .keyboard-icon {
+    color: #2e8068;
+    font-size: 1.1rem;
+  }
+
+  .exercise-list {
+    display: flex;
     flex-direction: column;
+    gap: 17px;
   }
 
-  button {
-    width: 100%;
+  .exercise-row {
+    overflow: hidden;
+    border: 1px solid #e4e4e4;
+    background: #f1f1f1;
   }
-}
+
+  .prompt {
+    min-height: 43px;
+    padding: 9px 13px 5px;
+    overflow: hidden;
+    color: #202020;
+    background: #fff;
+    font-family: "Kruti Dev 010", "Kruti Dev", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    line-height: 1.65;
+    white-space: nowrap;
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    height: 43px;
+    padding: 7px 13px;
+    color: #252525;
+    background: #e1e1e1;
+    border: 0;
+    outline: 0;
+    font-family: "Kruti Dev 010", "Kruti Dev", "Nirmala UI", "Noto Sans Devanagari", sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    unicode-bidi: plaintext;
+  }
+
+  input::placeholder {
+    color: #a3a3a3;
+  }
+
+  input:focus {
+    background: #d5ebe3;
+    box-shadow: inset 0 0 0 2px #2e8068;
+  }
+
+  @media (max-width: 900px) {
+    .window-title {
+      display: none;
+    }
+
+    .lesson-bar {
+      padding: 12px 18px;
+    }
+
+    .workspace {
+      grid-template-columns: 175px minmax(0, 1fr);
+    }
+
+    .part-button {
+      width: 140px;
+    }
+
+    .practice-panel {
+      padding: 25px 28px 40px;
+    }
+  }
 </style>
