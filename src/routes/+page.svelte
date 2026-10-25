@@ -1,6 +1,6 @@
 <script lang="ts">
   const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
-  const parts = ["part 1", "part 2", "part 3", "part 4", "part 5", "part 6", "part 7", "part 8", "part 9"];
+  const parts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09"];
   const practiceText = "ेकिही ष्यसार";
   const practiceLines = Array.from(
     { length: 10 },
@@ -236,6 +236,9 @@
   }
 
   .parts-panel {
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
     padding: 25px 14px 30px;
     background: #d3d3d3;
     border-right: 1px solid #c3c3c3;
