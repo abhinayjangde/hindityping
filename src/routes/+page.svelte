@@ -1,7 +1,7 @@
 <script lang="ts">
   const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
   const parts = ["part 1", "part 2", "part 3", "part 4", "part 5", "part 6", "part 7", "part 8", "part 9"];
-  const keyboardPractice = "sdfgh ‘;lkj"; 
+  const keyboardPractice = "sdfgh ';lkj";
   const practiceText = "ेकिही ष्यसार";
   const practiceLines = Array.from(
     { length: 9 },
@@ -28,18 +28,9 @@
     typedLines = typedLines;
   }
 
-  function handleKeydown(index: number, event: KeyboardEvent) {
-    if (event.code !== "Quote") {
-      return;
-    }
-
-    event.preventDefault();
-    const target = event.currentTarget as HTMLInputElement;
+  function insertText(index: number, target: HTMLInputElement, insertedText: string) {
     const start = target.selectionStart ?? target.value.length;
     const end = target.selectionEnd ?? start;
-    const insertedText = event.shiftKey || event.getModifierState("CapsLock")
-      ? "श्"
-      : "ष्";
     const nextValue = `${target.value.slice(0, start)}${insertedText}${target.value.slice(end)}`;
     typedLines[index] = nextValue;
     typedLines = typedLines;
@@ -48,6 +39,33 @@
       const cursor = start + insertedText.length;
       target.setSelectionRange(cursor, cursor);
     });
+  }
+
+  function handleKeydown(index: number, event: KeyboardEvent) {
+    const target = event.currentTarget as HTMLInputElement;
+    const keyMappings: Record<string, string> = {
+      KeyS: "े",
+      KeyD: "क",
+      KeyF: "ि",
+      KeyG: "ह",
+      KeyH: "ी",
+      Semicolon: "य",
+      KeyL: "स",
+      KeyK: "ा",
+      KeyJ: "र"
+    };
+    let insertedText = keyMappings[event.code];
+
+    if (event.code === "Quote") {
+      insertedText = event.shiftKey || event.getModifierState("CapsLock") ? "श्" : "ष्";
+    }
+
+    if (!insertedText || event.ctrlKey || event.altKey || event.metaKey) {
+      return;
+    }
+
+    event.preventDefault();
+    insertText(index, target, insertedText);
   }
 </script>
 
