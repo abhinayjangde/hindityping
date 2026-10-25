@@ -1,14 +1,32 @@
 <script lang="ts">
-  const lessons = Array.from({ length: 10 }, (_, index) => `lesson ${index + 1}`);
-  const parts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09", "Part 10"];
+  const defaultParts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09", "Part 10"];
+  const lessons = ["Lesson 01 - Basics", "Lesson 02", "Lesson 03", "Lesson 04", "Lesson 05", "Lesson 06", "Lession 07 - Stories", "Lesson 08", "Lesson 09", "Lesson 10"].map((name) => ({
+    name,
+    parts: [...defaultParts]
+  }));
+  const storyPracticeLines = [
+    "राम एक अच्छा लड़का था।",
+    "राम हर दिन घर पर रहता था।",
+    "एक दिन राम ने एक गरीब नर की मदद की।",
+    "वह नर बहुत खुश हुआ।",
+    'राम ने कहा, "हम सब को अच्छे कर्म करने चाहिए।"',
+    "अच्छे कर्म से मन को सुख मिलता है।",
+    "राम और हरि अच्छे मित्र थे।",
+    "वे हर दिन मिलकर काम करते थे।",
+    "उनका जीवन सरल और सुखी था।",
+    "सीख: हमें हमेशा अच्छे कर्म करने चाहिए।"
+  ];
 
   let activeLesson = $state(0);
   let activePart = $state(0);
+  const activeLessonParts = $derived(lessons[activeLesson].parts);
   const practiceText = "ेकिही ष्यसार";
   const practiceLines = $derived(
-    Array.from(
-      { length: 10 },
-      () =>
+    activeLesson === 6 && activePart === 0
+      ? storyPracticeLines
+      : Array.from(
+          { length: 10 },
+          () =>
         activeLesson === 0 && activePart === 1
           ? "dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk"
           : activeLesson === 0 && activePart === 2
@@ -18,15 +36,16 @@
           : activeLesson === 0 && activePart === 4
             ? "dj dj dj dj dj dj dj dj dj dj"
           : activeLesson === 1 && activePart === 0
-            ? "zxcvb /.,mn"
+            ? "zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn"
           : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
-    )
+        )
   );
   let typedLines = $state<string[]>(Array.from({ length: 10 }, () => ""));
   let inputElements: HTMLInputElement[] = [];
 
   function chooseLesson(index: number) {
     activeLesson = index;
+    activePart = 0;
     typedLines = practiceLines.map(() => "");
   }
 
@@ -124,7 +143,7 @@
           aria-current={activeLesson === index ? "page" : undefined}
           onclick={() => chooseLesson(index)}
         >
-          {lesson}
+          {lesson.name}
         </button>
       {/each}
     </nav>
@@ -133,7 +152,7 @@
   <div class="workspace">
     <aside class="parts-panel" aria-label="Lesson parts">
       <div class="parts-heading">अभ्यास</div>
-      {#each parts as part, index}
+      {#each activeLessonParts as part, index}
         <button
           class:active={activePart === index}
           class="part-button"
@@ -347,6 +366,12 @@
     font-size: clamp(20px, 1.8vw, 20px);
     line-height: 1.6;
     unicode-bidi: plaintext;
+  }
+
+  input.kruti-dev {
+    height: 60px;
+    font-size: clamp(24px, 2.4vw, 30px);
+    line-height: 1.45;
   }
 
   input::placeholder {
