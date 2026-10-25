@@ -11,6 +11,8 @@
       () =>
         activeLesson === 0 && activePart === 1
           ? "dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk"
+          : activeLesson === 1 && activePart === 0
+            ? "zxcvb /.,mn"
           : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
     )
   );
@@ -28,7 +30,10 @@
   }
 
   function isKrutiDevExercise() {
-    return activeLesson === 0 && activePart === 1;
+    return (
+      (activeLesson === 0 && activePart === 1) ||
+      (activeLesson === 1 && activePart === 0)
+    );
   }
 
   function updateLine(index: number, event: Event) {
@@ -145,7 +150,6 @@
               oninput={(event) => updateLine(index, event)}
               onkeydown={(event) => handleKeydown(index, event)}
               aria-label={`अभ्यास पंक्ति ${index + 1}`}
-              placeholder="यहाँ टाइप करें..."
               inputmode="text"
               lang="hi"
               dir="ltr"
@@ -312,6 +316,12 @@
 
   .kruti-dev {
     font-family: "Kruti Dev 010", "Kruti Dev", sans-serif;
+  }
+
+  .prompt.kruti-dev {
+    min-height: 60px;
+    font-size: clamp(24px, 2.4vw, 30px);
+    line-height: 1.45;
   }
 
   input {
