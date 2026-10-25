@@ -105,7 +105,7 @@
 
 <main class="app-window" lang="hi">
   <header class="lesson-bar" aria-label="Lessons">
-    <span class="window-title">हिंदी टाइपिंग</span>
+    <span class="window-title">मामू हिंदी टाइपिंग</span>
     <nav>
       {#each lessons as lesson, index}
         <button
@@ -211,10 +211,11 @@
 
   .window-title {
     width: 112px;
-    color: #27745e;
-    font-size: 1rem;
+    color: #000000;
+    font-size: 1.3rem;
     font-weight: 700;
     white-space: nowrap;
+    margin-right: 62px;
   }
 
   nav {
