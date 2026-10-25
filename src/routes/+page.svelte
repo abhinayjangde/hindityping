@@ -299,13 +299,13 @@
   }
 
   .prompt {
-    min-height: 43px;
+    min-height: 52px;
     padding: 9px 13px 5px;
     overflow: hidden;
     color: #202020;
     background: #fff;
     font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
-    font-size: clamp(1.4rem, 1.8vw, 20px);
+    font-size: clamp(20px, 1.8vw, 20px);
     line-height: 1.65;
     white-space: nowrap;
   }
@@ -317,14 +317,14 @@
   input {
     display: block;
     width: 100%;
-    height: 43px;
+    height: 52px;
     padding: 7px 13px;
     color: #252525;
     background: #e1e1e1;
     border: 0;
     outline: 0;
     font-family: "Nirmala UI", "Noto Sans Devanagari", "Mangal", sans-serif;
-    font-size: clamp(16px, 1.8vw, 20px);
+    font-size: clamp(20px, 1.8vw, 20px);
     line-height: 1.6;
     unicode-bidi: plaintext;
   }
