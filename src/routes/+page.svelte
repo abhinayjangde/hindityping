@@ -1,103 +1,57 @@
 <script lang="ts">
+  import LessonHeader from "$lib/components/LessonHeader.svelte";
+  import LessonParts from "$lib/components/LessonParts.svelte";
+  import PracticeList from "$lib/components/PracticeList.svelte";
   import { getHindiKeyMapping } from "$lib/hindi-keyboard";
-
-  const defaultParts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09", "Part 10"];
-  const lessons = ["Lesson 01 - Basics", "Lesson 02", "Lesson 03", "Lesson 04", "Lesson 05", "Lesson 06", "Lession 07 - Stories", "Lesson 08", "Lesson 09", "Lesson 10"].map((name) => ({
-    name,
-    parts: [...defaultParts]
-  }));
-  const storyPracticeLines = [
-    "राम एक अच्छा लड़का था।",
-    "राम हर दिन घर पर रहता था।",
-    "एक दिन राम ने एक गरीब नर की मदद की।",
-    "वह नर बहुत खुश हुआ।",
-    'राम ने कहा, "हम सब को अच्छे कर्म करने चाहिए।"',
-    "अच्छे कर्म से मन को सुख मिलता है।",
-    "राम और हरि अच्छे मित्र थे।",
-    "वे हर दिन मिलकर काम करते थे।",
-    "उनका जीवन सरल और सुखी था।",
-    "सीख: हमें हमेशा अच्छे कर्म करने चाहिए।"
-  ];
+  import { isKrutiDevExercise, isStoryExercise } from "$lib/lesson-data";
+  import { lessons } from "$lib/lesson-data";
+  import { getPracticeLines } from "$lib/practice-content";
+  import { createEmptyTypedLines, insertAtSelection, shouldFocusNextLine } from "$lib/typing-state";
 
   let activeLesson = $state(0);
   let activePart = $state(0);
   const activeLessonParts = $derived(lessons[activeLesson].parts);
-  const practiceText = "ेकिही ष्यसार";
-  const practiceLines = $derived(
-    activeLesson === 6 && activePart === 0
-      ? storyPracticeLines
-      : Array.from(
-          { length: 10 },
-          () =>
-        activeLesson === 0 && activePart === 1
-          ? "dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk dkdk"
-          : activeLesson === 0 && activePart === 2
-            ? "dkdh dkdh dkdh dkdh dkdh dkdh dkdh dkdh dkdh dkdh"
-          : activeLesson === 0 && activePart === 3
-            ? "gd gd gd gd gd gd gd gd gd gd"
-          : activeLesson === 0 && activePart === 4
-            ? "dj dj dj dj dj dj dj dj dj dj"
-          : activeLesson === 1 && activePart === 0
-            ? "zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn"
-          : `${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText} ${practiceText}`
-        )
-  );
-  let typedLines = $state<string[]>(Array.from({ length: 10 }, () => ""));
-  let inputElements: HTMLInputElement[] = [];
+  const practiceLines = $derived(getPracticeLines(activeLesson, activePart));
+  let typedLines = $state<string[]>(createEmptyTypedLines(getPracticeLines(0, 0).length));
+  let inputElements = $state<(HTMLInputElement | undefined)[]>([]);
 
   function chooseLesson(index: number) {
     activeLesson = index;
     activePart = 0;
-    typedLines = practiceLines.map(() => "");
+    typedLines = createEmptyTypedLines(getPracticeLines(index, 0).length);
+    inputElements = [];
   }
 
   function choosePart(index: number) {
     activePart = index;
-    typedLines = practiceLines.map(() => "");
-  }
-
-  function isKrutiDevExercise() {
-    return (
-      (activeLesson === 0 && activePart === 1) ||
-      (activeLesson === 0 && activePart === 2) ||
-      (activeLesson === 0 && activePart === 3) ||
-      (activeLesson === 0 && activePart === 4) ||
-      (activeLesson === 1 && activePart === 0) ||
-      isStoryExercise()
-    );
-  }
-
-  function isStoryExercise() {
-    return activeLesson === 6 && activePart === 0;
+    typedLines = createEmptyTypedLines(getPracticeLines(activeLesson, index).length);
+    inputElements = [];
   }
 
   function updateLine(index: number, event: Event) {
     const target = event.currentTarget as HTMLInputElement;
     typedLines[index] = target.value;
     typedLines = typedLines;
-    focusNextLine(index, target.value);
-  }
-
-  function focusNextLine(index: number, value: string) {
-    if (
-      index < practiceLines.length - 1 &&
-      Array.from(value).length >= Array.from(practiceLines[index]).length
-    ) {
+    if (shouldFocusNextLine(index, practiceLines.length, target.value, practiceLines[index])) {
       inputElements[index + 1]?.focus();
     }
   }
 
   function insertText(index: number, target: HTMLInputElement, insertedText: string) {
-    const start = target.selectionStart ?? target.value.length;
-    const end = target.selectionEnd ?? start;
-    const nextValue = `${target.value.slice(0, start)}${insertedText}${target.value.slice(end)}`;
-    typedLines[index] = nextValue;
+    const result = insertAtSelection(
+      target.value,
+      target.selectionStart,
+      target.selectionEnd,
+      insertedText
+    );
+    typedLines[index] = result.value;
     typedLines = typedLines;
 
     requestAnimationFrame(() => {
-      const cursor = start + insertedText.length;
-      target.setSelectionRange(cursor, cursor);
-      focusNextLine(index, nextValue);
+      target.setSelectionRange(result.cursor, result.cursor);
+      if (shouldFocusNextLine(index, practiceLines.length, result.value, practiceLines[index])) {
+        inputElements[index + 1]?.focus();
+      }
     });
   }
 
@@ -119,71 +73,24 @@
 </svelte:head>
 
 <main class="app-window" lang="hi">
-  <header class="lesson-bar" aria-label="Lessons">
-    <span class="window-title">मामू हिंदी टाइपिंग</span>
-    <nav>
-      {#each lessons as lesson, index}
-        <button
-          class:active={activeLesson === index}
-          class="lesson-button"
-          type="button"
-          aria-current={activeLesson === index ? "page" : undefined}
-          onclick={() => chooseLesson(index)}
-        >
-          {lesson.name}
-        </button>
-      {/each}
-    </nav>
-  </header>
+  <LessonHeader {lessons} {activeLesson} onSelect={chooseLesson} />
 
   <div class="workspace">
-    <aside class="parts-panel" aria-label="Lesson parts">
-      <div class="parts-heading">अभ्यास</div>
-      {#each activeLessonParts as part, index}
-        <button
-          class:active={activePart === index}
-          class="part-button"
-          type="button"
-          aria-current={activePart === index ? "page" : undefined}
-          onclick={() => choosePart(index)}
-        >
-          {part}
-        </button>
-      {/each}
-    </aside>
-
-    <section class="practice-panel" aria-labelledby="practice-title">
-
-      <div class="exercise-list">
-        {#each practiceLines as line, index}
-          <div class="exercise-row">
-            <div
-              class:kruti-dev={isKrutiDevExercise()}
-              class:unicode-dev={isStoryExercise()}
-              class="prompt"
-            >
-              {line}
-            </div>
-            <input
-              class:kruti-dev={isKrutiDevExercise()}
-              bind:this={inputElements[index]}
-              value={typedLines[index]}
-              oninput={(event) => updateLine(index, event)}
-              onkeydown={(event) => handleKeydown(index, event)}
-              aria-label={`अभ्यास पंक्ति ${index + 1}`}
-              inputmode="text"
-              lang="hi"
-              dir="ltr"
-              spellcheck="false"
-            />
-          </div>
-        {/each}
-      </div>
-    </section>
+    <LessonParts parts={activeLessonParts} {activePart} onSelect={choosePart} />
+    <PracticeList
+      lines={practiceLines}
+      {typedLines}
+      isKrutiDev={isKrutiDevExercise(activeLesson, activePart)}
+      isStory={isStoryExercise(activeLesson, activePart)}
+      {inputElements}
+      onInput={updateLine}
+      onKeydown={handleKeydown}
+    />
   </div>
 </main>
 
 <style>
+  :global {
   :global(*) {
     box-sizing: border-box;
   }
@@ -399,5 +306,6 @@
     .practice-panel {
       padding: 25px 28px 40px;
     }
+  }
   }
 </style>

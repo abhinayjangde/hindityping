@@ -24,3 +24,22 @@ src-tauri\target\release\bundle\
 Share the `.exe` installer from the `nsis` folder with your friend. They can run it to install the app. The `.msi` installer in the `msi` folder is an alternative for Windows systems that use MSI deployment.
 
 The first build can take several minutes because Rust compiles the desktop application. The installed computer needs Microsoft Edge WebView2, which is already included with most current Windows installations.
+
+## Frontend structure
+
+The Svelte frontend is organized by responsibility:
+
+```text
+src/
+  lib/
+    components/       Reusable lesson and practice UI
+    lesson-data.ts    Lesson definitions and exercise classification
+    practice-content.ts
+                      Practice text selection and lesson content
+    typing-state.ts   Input editing and focus behavior
+    hindi-keyboard.ts Hindi keyboard mapping
+  routes/
+    +page.svelte      Page orchestration and feature wiring
+```
+
+When adding a feature, prefer adding data or reusable behavior under `src\lib` and keep `src\routes\+page.svelte` focused on coordinating components and state.
