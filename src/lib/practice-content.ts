@@ -38,14 +38,30 @@ export function getPracticeLines(lessonIndex: number, partIndex: number): string
     return repeatedLines("dj dj dj dj dj dj dj dj dj dj");
   }
 
+  if (lessonIndex === 0 && partIndex === 5) {
+    return repeatedLines("fdjk;k fdjk;k fdjk;k fdjk;k fdjk;k fdjk;k fdjk;k fdjk;k fdjk;k fdjk;k");
+  }
+
   if (lessonIndex === 1 && partIndex === 0) {
     return repeatedLines(
       "zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn zxcvb /.,mn"
     );
   }
 
+  if (lessonIndex === 1 && partIndex === 1) {
+    return repeatedLines("cjk cjk cjk cjk cjk cjk cjk cjk cjk cjk");
+  }
+
+  if (lessonIndex === 1 && partIndex === 2) {
+    return repeatedLines("dkcj dkcj dkcj dkcj dkcj dkcj dkcj dkcj dkcj dkcj");
+  }
+
   if (lessonIndex === 2 && partIndex === 0) {
     return repeatedLines("werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu");
+  }
+
+  if (lessonIndex === 2 && partIndex === 1) {
+    return repeatedLines("ty ty ty ty ty ty ty ty ty ty ty ty ty ty ty ty");
   }
 
   return repeatedLines(Array(9).fill(practiceText).join(" "));

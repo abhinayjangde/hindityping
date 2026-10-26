@@ -37,9 +37,12 @@ export function isStoryExercise(lessonIndex: number, partIndex: number): boolean
 
 export function isKrutiDevExercise(lessonIndex: number, partIndex: number): boolean {
   return (
-    (lessonIndex === 0 && partIndex >= 1 && partIndex <= 4) ||
+    (lessonIndex === 0 && partIndex >= 1 && partIndex <= 5) ||
     (lessonIndex === 1 && partIndex === 0) ||
+    (lessonIndex === 1 && partIndex === 1) ||
+    (lessonIndex === 1 && partIndex === 2) ||
     (lessonIndex === 2 && partIndex === 0) ||
+    (lessonIndex === 2 && partIndex === 1) ||
     isStoryExercise(lessonIndex, partIndex)
   );
 }
