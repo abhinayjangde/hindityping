@@ -6,7 +6,12 @@
   import { isKrutiDevExercise, isStoryExercise } from "$lib/lesson-data";
   import { lessons } from "$lib/lesson-data";
   import { getPracticeLines } from "$lib/practice-content";
-  import { createEmptyTypedLines, insertAtSelection, shouldFocusNextLine } from "$lib/typing-state";
+  import {
+    createEmptyTypedLines,
+    insertAtSelection,
+    shouldFocusNextLine,
+    shouldFocusPreviousLine
+  } from "$lib/typing-state";
 
   let activeLesson = $state(0);
   let activePart = $state(0);
@@ -26,6 +31,11 @@
     activePart = index;
     typedLines = createEmptyTypedLines(getPracticeLines(activeLesson, index).length);
     inputElements = [];
+  }
+
+  function registerInputElement(index: number, element: HTMLInputElement | undefined) {
+    inputElements[index] = element;
+    inputElements = inputElements;
   }
 
   function updateLine(index: number, event: Event) {
@@ -57,6 +67,21 @@
 
   function handleKeydown(index: number, event: KeyboardEvent) {
     const target = event.currentTarget as HTMLInputElement;
+    if (event.key === "Enter" && index < practiceLines.length - 1) {
+      event.preventDefault();
+      inputElements[index + 1]?.focus();
+      return;
+    }
+
+    if (event.key === "Backspace" && shouldFocusPreviousLine(index, target.value)) {
+      event.preventDefault();
+      const previousInput = inputElements[index - 1];
+      previousInput?.focus();
+      const cursor = previousInput?.value.length ?? 0;
+      previousInput?.setSelectionRange(cursor, cursor);
+      return;
+    }
+
     const insertedText = getHindiKeyMapping(event);
     if (!insertedText) {
       return;
@@ -82,7 +107,7 @@
       {typedLines}
       isKrutiDev={isKrutiDevExercise(activeLesson, activePart)}
       isStory={isStoryExercise(activeLesson, activePart)}
-      {inputElements}
+      onInputElement={registerInputElement}
       onInput={updateLine}
       onKeydown={handleKeydown}
     />

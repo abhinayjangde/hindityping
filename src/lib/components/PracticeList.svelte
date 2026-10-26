@@ -6,7 +6,7 @@
     typedLines,
     isKrutiDev,
     isStory,
-    inputElements,
+    onInputElement,
     onInput,
     onKeydown
   }: {
@@ -14,10 +14,16 @@
     typedLines: string[];
     isKrutiDev: boolean;
     isStory: boolean;
-    inputElements: InputElement[];
+    onInputElement: (index: number, element: InputElement) => void;
     onInput: (index: number, event: Event) => void;
     onKeydown: (index: number, event: KeyboardEvent) => void;
   } = $props();
+
+  let inputElements = $state<InputElement[]>([]);
+
+  $effect(() => {
+    inputElements.forEach((element, index) => onInputElement(index, element));
+  });
 </script>
 
 <section class="practice-panel" aria-labelledby="practice-title">

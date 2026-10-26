@@ -25,3 +25,7 @@ export function shouldFocusNextLine(
 ): boolean {
   return index < lineCount - 1 && Array.from(value).length >= Array.from(target).length;
 }
+
+export function shouldFocusPreviousLine(index: number, value: string): boolean {
+  return index > 0 && value.length === 0;
+}
