@@ -14,7 +14,15 @@
     menuOpen = false;
     aboutOpen = true;
   }
+
+  function closeMenuOnOutsideClick(event: MouseEvent) {
+    if (!(event.target instanceof Element) || !event.target.closest(".help-menu")) {
+      menuOpen = false;
+    }
+  }
 </script>
+
+<svelte:window onclick={closeMenuOnOutsideClick} />
 
 <div class="help-menu">
   <button
