@@ -98,6 +98,12 @@ const shiftedKeys: KeyMapping = {
   Slash: "र"
 };
 
+export const hindiKeyboardMap = Object.keys(normalKeys).map((code) => ({
+  code,
+  normal: normalKeys[code],
+  shifted: shiftedKeys[code]
+}));
+
 export function getHindiKeyMapping(event: KeyboardEvent): string | undefined {
   if (event.ctrlKey || event.altKey || event.metaKey) {
     return undefined;

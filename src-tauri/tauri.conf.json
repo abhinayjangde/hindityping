@@ -14,7 +14,8 @@
       {
         "title": "Chikoo",
         "width": 1500,
-        "height": 900
+        "height": 900,
+        "decorations": false
       }
     ],
     "security": {

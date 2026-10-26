@@ -2,6 +2,7 @@
   import LessonHeader from "$lib/components/LessonHeader.svelte";
   import LessonParts from "$lib/components/LessonParts.svelte";
   import PracticeList from "$lib/components/PracticeList.svelte";
+  import TitleBar from "$lib/components/TitleBar.svelte";
   import { getHindiKeyMapping } from "$lib/hindi-keyboard";
   import { isKrutiDevExercise, isStoryExercise } from "$lib/lesson-data";
   import { lessons } from "$lib/lesson-data";
@@ -100,6 +101,7 @@
 </svelte:head>
 
 <main class="app-window" lang="hi">
+  <TitleBar />
   <LessonHeader {lessons} {activeLesson} onSelect={chooseLesson} />
 
   <div class="workspace">
@@ -210,17 +212,19 @@
 
   .workspace {
     display: grid;
-    grid-template-columns: 224px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 224px;
     min-height: calc(100vh - 70px);
   }
 
   .parts-panel {
     position: sticky;
     top: 70px;
+    grid-column: 2;
+    grid-row: 1;
     height: calc(100vh - 70px);
     padding: 25px 14px 30px;
     background: #d3d3d3;
-    border-right: 1px solid #c3c3c3;
+    border-left: 1px solid #c3c3c3;
   }
 
   .parts-heading {
@@ -241,11 +245,12 @@
   }
 
   .practice-panel {
+    grid-column: 1;
+    grid-row: 1;
     min-width: 0;
     padding: 30px 49px 50px;
     background: #fff;
   }
-
 
 
   .exercise-list {
@@ -324,7 +329,7 @@
     }
 
     .workspace {
-      grid-template-columns: 175px minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) 175px;
     }
 
     .part-button {
