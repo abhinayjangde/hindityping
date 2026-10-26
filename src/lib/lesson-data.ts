@@ -39,6 +39,7 @@ export function isKrutiDevExercise(lessonIndex: number, partIndex: number): bool
   return (
     (lessonIndex === 0 && partIndex >= 1 && partIndex <= 4) ||
     (lessonIndex === 1 && partIndex === 0) ||
+    (lessonIndex === 2 && partIndex === 0) ||
     isStoryExercise(lessonIndex, partIndex)
   );
 }

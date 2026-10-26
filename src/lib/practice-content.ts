@@ -44,5 +44,9 @@ export function getPracticeLines(lessonIndex: number, partIndex: number): string
     );
   }
 
+  if (lessonIndex === 2 && partIndex === 0) {
+    return repeatedLines("werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu werty [poiu");
+  }
+
   return repeatedLines(Array(9).fill(practiceText).join(" "));
 }

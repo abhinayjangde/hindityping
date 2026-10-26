@@ -82,7 +82,9 @@
       return;
     }
 
-    const insertedText = getHindiKeyMapping(event);
+    const usesKrutiDevInput =
+      isKrutiDevExercise(activeLesson, activePart) && !isStoryExercise(activeLesson, activePart);
+    const insertedText = usesKrutiDevInput ? undefined : getHindiKeyMapping(event);
     if (!insertedText) {
       return;
     }
@@ -190,6 +192,7 @@
   .lesson-button {
     padding: 5px 10px 6px;
     font-size: 0.98rem;
+    background: #6076cd;
   }
 
   .lesson-button:hover,
