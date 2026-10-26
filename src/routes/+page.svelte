@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { getHindiKeyMapping } from "$lib/hindi-keyboard";
+
   const defaultParts = ["Part 01", "Part 02", "Part 03", "Part 04", "Part 05", "Part 06", "Part 07", "Part 08", "Part 09", "Part 10"];
   const lessons = ["Lesson 01 - Basics", "Lesson 02", "Lesson 03", "Lesson 04", "Lesson 05", "Lesson 06", "Lession 07 - Stories", "Lesson 08", "Lesson 09", "Lesson 10"].map((name) => ({
     name,
@@ -101,28 +103,8 @@
 
   function handleKeydown(index: number, event: KeyboardEvent) {
     const target = event.currentTarget as HTMLInputElement;
-    if (isKrutiDevExercise()) {
-      return;
-    }
-
-    const keyMappings: Record<string, string> = {
-      KeyS: "े",
-      KeyD: "क",
-      KeyF: "ि",
-      KeyG: "ह",
-      KeyH: "ी",
-      Semicolon: "य",
-      KeyL: "स",
-      KeyK: "ा",
-      KeyJ: "र"
-    };
-    let insertedText = keyMappings[event.code];
-
-    if (event.code === "Quote") {
-      insertedText = event.shiftKey || event.getModifierState("CapsLock") ? "श्" : "ष्";
-    }
-
-    if (!insertedText || event.ctrlKey || event.altKey || event.metaKey) {
+    const insertedText = getHindiKeyMapping(event);
+    if (!insertedText) {
       return;
     }
 
