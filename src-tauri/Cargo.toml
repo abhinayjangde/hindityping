@@ -1,5 +1,5 @@
 [package]
-name = "hindi-typing"
+name = "chikoo"
 version = "0.1.0"
 description = "A Hindi typing learning desktop application"
 authors = ["you"]

@@ -13,7 +13,7 @@
 </script>
 
 <header class="lesson-bar" aria-label="Lessons">
-  <span class="window-title">मामू हिंदी टाइपिंग</span>
+  <span class="window-title">Chikoo</span>
   <nav>
     {#each lessons as lesson, index}
       <button
