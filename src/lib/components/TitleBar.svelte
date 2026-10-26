@@ -47,10 +47,14 @@
 
 <style>
   .title-bar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 32px;
+    flex: 0 0 32px;
     color: #fff;
     background: #101010;
     user-select: none;

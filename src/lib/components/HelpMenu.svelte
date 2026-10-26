@@ -118,10 +118,11 @@
   .menu-items {
     position: absolute;
     top: calc(100% + 5px);
-    right: 0;
+    left: 0;
     z-index: 20;
     display: flex;
     min-width: 190px;
+    max-width: calc(100vw - 16px);
     flex-direction: column;
     padding: 5px;
     background: white;

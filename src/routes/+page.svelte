@@ -102,19 +102,21 @@
 
 <main class="app-window" lang="hi">
   <TitleBar />
-  <LessonHeader {lessons} {activeLesson} onSelect={chooseLesson} />
+  <div class="content-scroll">
+    <LessonHeader {lessons} {activeLesson} onSelect={chooseLesson} />
 
-  <div class="workspace">
-    <LessonParts parts={activeLessonParts} {activePart} onSelect={choosePart} />
-    <PracticeList
-      lines={practiceLines}
-      {typedLines}
-      isKrutiDev={isKrutiDevExercise(activeLesson, activePart)}
-      isStory={isStoryExercise(activeLesson, activePart)}
-      onInputElement={registerInputElement}
-      onInput={updateLine}
-      onKeydown={handleKeydown}
-    />
+    <div class="workspace">
+      <LessonParts parts={activeLessonParts} {activePart} onSelect={choosePart} />
+      <PracticeList
+        lines={practiceLines}
+        {typedLines}
+        isKrutiDev={isKrutiDevExercise(activeLesson, activePart)}
+        isStory={isStoryExercise(activeLesson, activePart)}
+        onInputElement={registerInputElement}
+        onInput={updateLine}
+        onKeydown={handleKeydown}
+      />
+    </div>
   </div>
 </main>
 
@@ -146,11 +148,20 @@
   }
 
   .app-window {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    min-height: 0;
     margin: 0;
     background: #d2d2d2;
     box-shadow: 0 0 0 1px #111, 0 12px 35px rgb(0 0 0 / 35%);
+  }
+
+  .content-scroll {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
   }
 
   .lesson-bar {
@@ -213,7 +224,7 @@
   .workspace {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 224px;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 102px);
   }
 
   .parts-panel {
@@ -221,7 +232,7 @@
     top: 70px;
     grid-column: 2;
     grid-row: 1;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 102px);
     padding: 25px 14px 30px;
     background: #d3d3d3;
     border-left: 1px solid #c3c3c3;
